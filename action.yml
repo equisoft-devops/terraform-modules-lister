@@ -24,5 +24,5 @@ runs:
       shell: bash
     - name: List Terraform modules and insert it
       id: terraform-module-lister
-      run: python src/terraform_modules_lister.py
+      run: python $GITHUB_ACTION_PATH/src/terraform_modules_lister.py
       shell: bash
