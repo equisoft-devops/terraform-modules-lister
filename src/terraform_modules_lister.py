@@ -38,12 +38,12 @@ def markdown(modules: List[str], names: List[str]) -> str:
     return content
 
 
-def replace_markdown(output_file: str, modules_content: str):
+def replace_markdown(output_file: str, modules_content: str, tag_suffix: str):
     with open(output_file, "r+") as handle:
         original_content = handle.read()
         new_content = re.sub(
-            '(?s)<!-- BEGIN_TF_MODULES -->.*<!-- END_TF_MODULES -->',
-            f"<!-- BEGIN_TF_MODULES -->\n{modules_content}<!-- END_TF_MODULES -->",
+            f'(?s)<!--(?: *)BEGIN_TF_{tag_suffix}(?: *)-->.*<!--(?: *)END_TF_{tag_suffix}(?: *)-->',
+            f"<!-- BEGIN_TF_{tag_suffix} -->\n{modules_content}<!-- END_TF_{tag_suffix} -->",
             original_content,
             re.IGNORECASE | re.MULTILINE
         )
@@ -51,14 +51,15 @@ def replace_markdown(output_file: str, modules_content: str):
         handle.write(new_content)
 
 
-def main(output_file: str, find_dir: str):
+def main(output_file: str, find_dir: str, tag_suffix: str):
     modules = list_modules(find_dir)
     modules_name = find_name(modules)
     content = markdown(modules, modules_name)
-    replace_markdown(output_file, content)
+    replace_markdown(output_file, content, tag_suffix)
 
 
 if __name__ == "__main__":
     output_file = os.environ["OUTPUT_FILE"]
     find_dir = os.environ["FIND_DIR"]
-    main(output_file, find_dir)
+    tag_suffix = os.environ["TAG_SUFFIX"]
+    main(output_file, find_dir, tag_suffix)

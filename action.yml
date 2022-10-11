@@ -10,6 +10,10 @@ inputs:
     description: Relative path to the base directory name where to find modules.
     required: false
     default: "."
+  tag-suffix:
+    description: Relative path to the base directory name where to find modules.
+    required: false
+    default: "MODULES"
 runs:
   using: 'composite'
   steps:
@@ -21,6 +25,7 @@ runs:
       run: |
           echo "OUTPUT_FILE=${{ inputs.output-file }}" >> $GITHUB_ENV
           echo "FIND_DIR=${{ inputs.find-dir }}" >> $GITHUB_ENV
+          echo "TAG_SUFFIX=${{ inputs.tag-suffix }}" >> $GITHUB_ENV
       shell: bash
     - name: List Terraform modules and insert it
       id: terraform-module-lister
