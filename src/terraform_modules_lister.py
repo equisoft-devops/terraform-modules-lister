@@ -6,12 +6,9 @@ from typing import List
 
 def list_modules(find_dir: str) -> List[str]:
     modules = []
-    for f in os.listdir(find_dir):
-        f_path = os.path.join(find_dir, f)
-        if os.path.isdir(f_path) and any(
-            [sub_module_file for sub_module_file in os.listdir(f_path) if os.path.splitext(sub_module_file)[1] == ".tf"]
-        ):
-            modules.append(f_path)
+    for root, dirs, files in os.walk(find_dir):
+        if any(os.path.splitext(f)[1] == ".tf" for f in files):
+            modules.append(root)
     return modules
 
 
@@ -45,7 +42,7 @@ def replace_markdown(output_file: str, modules_content: str, tag_suffix: str):
             f'(?s)<!--(?: *)BEGIN_TF_{tag_suffix}(?: *)-->.*<!--(?: *)END_TF_{tag_suffix}(?: *)-->',
             f"<!-- BEGIN_TF_{tag_suffix} -->\n{modules_content}<!-- END_TF_{tag_suffix} -->",
             original_content,
-            re.IGNORECASE | re.MULTILINE
+            flags=re.IGNORECASE | re.MULTILINE
         )
         handle.seek(0)
         handle.write(new_content)
