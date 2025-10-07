@@ -20,7 +20,7 @@ runs:
     - name: Install Python
       uses: actions/setup-python@v6
       with:
-        python-version: '3.13'
+        python-version: '3.14'
     - name: Pass Inputs to Shell
       run: |
           echo "OUTPUT_FILE=${{ inputs.output-file }}" >> $GITHUB_ENV
